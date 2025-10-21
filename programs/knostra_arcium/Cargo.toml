@@ -22,3 +22,4 @@ anchor-spl = "0.31.1"
 arcium-client = { default-features = false, version = "0.3.0" }
 arcium-macros = "0.3.0"
 arcium-anchor = "0.3.0"
+mpl-core = "0.11.1"

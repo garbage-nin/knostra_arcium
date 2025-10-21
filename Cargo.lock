@@ -1117,6 +1117,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "kaigan"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4f25ded719a2354f6b1a51d0c0741c25bc7afe038617664eb37f6418439eb084"
+dependencies = [
+ "borsh 0.10.4",
+ "serde",
+]
+
+[[package]]
 name = "keccak"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1134,6 +1144,7 @@ dependencies = [
  "arcium-anchor",
  "arcium-client",
  "arcium-macros",
+ "mpl-core",
 ]
 
 [[package]]
@@ -1237,6 +1248,45 @@ dependencies = [
 ]
 
 [[package]]
+name = "modular-bitfield"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a53d79ba8304ac1c4f9eb3b9d281f21f7be9d4626f72ce7df4ad8fbde4f38a74"
+dependencies = [
+ "modular-bitfield-impl",
+ "static_assertions",
+]
+
+[[package]]
+name = "modular-bitfield-impl"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a7d5f7076603ebc68de2dc6a650ec331a062a13abaa346975be747bbfa4b789"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "mpl-core"
+version = "0.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "502b2373d5c32f944dc095a250a5c5e5d283cad1a0f55d9e18ee267235b40e89"
+dependencies = [
+ "base64 0.22.1",
+ "borsh 0.10.4",
+ "kaigan",
+ "modular-bitfield",
+ "num-derive 0.3.3",
+ "num-traits",
+ "rmp-serde",
+ "serde_json",
+ "solana-program",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "num-bigint"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1257,6 +1307,17 @@ dependencies = [
  "num-traits",
  "rand 0.8.5",
  "serde",
+]
+
+[[package]]
+name = "num-derive"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "876a53fff98e03a936a674b29568b0e605f06b29372c2489ff4de23f1949743d"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
 ]
 
 [[package]]
@@ -1585,6 +1646,28 @@ name = "regex-syntax"
 version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3160422bbd54dd5ecfdca71e5fd59b7b8fe2b1697ab2baf64f6d05dcc66d298"
+
+[[package]]
+name = "rmp"
+version = "0.8.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "228ed7c16fa39782c3b3468e974aec2795e9089153cd08ee2e9aefb3613334c4"
+dependencies = [
+ "byteorder",
+ "num-traits",
+ "paste",
+]
+
+[[package]]
+name = "rmp-serde"
+version = "1.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "52e599a477cf9840e92f2cde9a7189e67b42c57532749bf90aea6ec10facd4db"
+dependencies = [
+ "byteorder",
+ "rmp",
+ "serde",
+]
 
 [[package]]
 name = "rustc-hash"
@@ -2186,7 +2269,7 @@ dependencies = [
  "log",
  "memoffset",
  "num-bigint 0.4.6",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "rand 0.8.5",
  "serde",
@@ -2600,7 +2683,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b80d57478d6599d30acc31cc5ae7f93ec2361a06aefe8ea79bc81739a08af4c3"
 dependencies = [
  "bincode",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "serde",
  "serde_derive",
@@ -2632,7 +2715,7 @@ dependencies = [
  "itertools",
  "js-sys",
  "merlin",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "rand 0.8.5",
  "serde",
@@ -2670,7 +2753,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "76fee7d65013667032d499adc3c895e286197a35a0d3a4643c80e7fd3e9969e3"
 dependencies = [
  "borsh 1.5.7",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "solana-program",
  "spl-associated-token-account-client",
@@ -2761,7 +2844,7 @@ dependencies = [
  "borsh 1.5.7",
  "bytemuck",
  "bytemuck_derive",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "solana-decode-error",
  "solana-msg",
@@ -2778,7 +2861,7 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d39b5186f42b2b50168029d81e58e800b690877ef0b30580d107659250da1d1"
 dependencies = [
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "solana-program",
  "spl-program-error-derive",
@@ -2804,7 +2887,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cd99ff1e9ed2ab86e3fd582850d47a739fec1be9f4661cba1782d3a0f26805f3"
 dependencies = [
  "bytemuck",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "solana-account-info",
  "solana-decode-error",
@@ -2827,7 +2910,7 @@ checksum = "ed320a6c934128d4f7e54fe00e16b8aeaecf215799d060ae14f93378da6dc834"
 dependencies = [
  "arrayref",
  "bytemuck",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "num_enum",
  "solana-program",
@@ -2842,7 +2925,7 @@ checksum = "5b27f7405010ef816587c944536b0eafbcc35206ab6ba0f2ca79f1d28e488f4f"
 dependencies = [
  "arrayref",
  "bytemuck",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "num_enum",
  "solana-program",
@@ -2906,7 +2989,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d595667ed72dbfed8c251708f406d7c2814a3fa6879893b323d56a10bedfc799"
 dependencies = [
  "bytemuck",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "solana-decode-error",
  "solana-instruction",
@@ -2925,7 +3008,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dfb9c89dbc877abd735f05547dcf9e6e12c00c11d6d74d8817506cab4c99fdbb"
 dependencies = [
  "borsh 1.5.7",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "solana-borsh",
  "solana-decode-error",
@@ -2947,7 +3030,7 @@ checksum = "4aa7503d52107c33c88e845e1351565050362c2314036ddf19a36cd25137c043"
 dependencies = [
  "arrayref",
  "bytemuck",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "solana-account-info",
  "solana-cpi",
@@ -2971,7 +3054,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ba70ef09b13af616a4c987797870122863cba03acc4284f226a4473b043923f9"
 dependencies = [
  "bytemuck",
- "num-derive",
+ "num-derive 0.4.2",
  "num-traits",
  "solana-account-info",
  "solana-decode-error",
@@ -2981,6 +3064,12 @@ dependencies = [
  "spl-pod",
  "thiserror 1.0.69",
 ]
+
+[[package]]
+name = "static_assertions"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "subtle"

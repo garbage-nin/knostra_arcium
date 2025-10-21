@@ -42,4 +42,28 @@ pub enum CustomError {
 
     #[msg("Unauthorized resolver authority")]
     UnauthorizedResolver,
+
+    #[msg("Deck is full")]
+    DeckFull,
+
+    #[msg("You do not own the specified NFT")]
+    NotNftOwner,
+
+    #[msg("Invalid NFT balance in associated token account")]
+    InvalidNftBalance,
+
+    #[msg("Required account is missing")]
+    MissingAccount,
+
+    #[msg("Invalid token account")]
+    InvalidTokenAccount,
+
+    #[msg("Invalid mint for the NFT")]
+    InvalidMint,
+
+    #[msg("Player has already joined the game")]
+    PlayerAlreadyJoined,
+
+    #[msg("Invalid Player")]
+    InvalidPayer
 }

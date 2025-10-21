@@ -50,6 +50,36 @@ pub struct BetAccount {
     pub claimed: bool,
 }
 
+#[derive(InitSpace)]
+#[account]
+pub struct DeckAccount {
+    pub owner: Pubkey,
+    #[max_len(20)]
+    pub nfts: Vec<Pubkey>,
+    pub bump: u8,
+}
+
+#[derive(InitSpace)]
+#[account]
+pub struct GameAccount {
+    pub market_account: Pubkey,
+    pub player_yes: Pubkey,
+    pub player_yes_deck: Pubkey,
+    pub player_no: Pubkey,
+    pub player_no_deck: Pubkey,
+    pub yes_cards1: [u8; 32],
+    pub yes_cards2: [u8; 32],
+    pub yes_cards3: [u8; 32],
+    pub no_cards1: [u8; 32],
+    pub no_cards2: [u8; 32],
+    pub no_cards3: [u8; 32],
+    pub current_turn: u8,
+    pub result: u8,
+    pub bump: u8,
+    pub nonce: u128,
+    pub game_id: u64,
+}
+
 #[derive(InitSpace, AnchorSerialize, AnchorDeserialize, Copy, Clone, PartialEq)]
 pub enum Status {
     NotStarted,

@@ -615,6 +615,67 @@ describe("KnostraArcium", () => {
     );
   });
 
+  it("Initialize init game computation definition", async () => {
+    const owner = readKpJson(`${os.homedir()}/.config/solana/id.json`);
+
+    console.log("Initializing init game computation definition");
+    const initIGSig = await initInitGameCompDef(program, owner, false, false);
+    console.log(
+      "Init game computation definition initialized with signature",
+      initIGSig
+    );
+
+    const mxePublicKey = await getMXEPublicKeyWithRetry(
+      provider as anchor.AnchorProvider,
+      program.programId
+    );
+
+    console.log("MXE x25519 pubkey is", mxePublicKey);
+
+    console.log("initialize a new game");
+    const gameId = 1;
+    const nonce = randomBytes(16);
+
+    const initComputationOffset = new anchor.BN(randomBytes(8), "hex");
+
+    const initGameTx = await program.methods
+      .initGame(
+        initComputationOffset,
+        new anchor.BN(gameId),
+        new anchor.BN(deserializeLE(nonce).toString())
+      )
+      .accountsPartial({
+        computationAccount: getComputationAccAddress(
+          program.programId,
+          initComputationOffset
+        ),
+        payer: owner.publicKey,
+        mxeAccount: getMXEAccAddress(program.programId),
+        mempoolAccount: getMempoolAccAddress(program.programId),
+        executingPool: getExecutingPoolAccAddress(program.programId),
+        compDefAccount: getCompDefAccAddress(
+          program.programId,
+          Buffer.from(getCompDefAccOffset("init_game")).readUInt32LE()
+        ),
+        clusterAccount: arciumEnv.arciumClusterPubkey,
+      })
+      .signers([owner])
+      .rpc({ skipPreflight: true, commitment: "confirmed" })
+      .then(confirm)
+      .then(log);
+
+    console.log("Init game queue tx sig is ", initGameTx);
+
+    // Wait for initGame computation finalization
+    const initGameFinalizeSig = await awaitComputationFinalization(
+      provider as anchor.AnchorProvider,
+      initComputationOffset,
+      program.programId,
+      "confirmed"
+    );
+    console.log("Init game finalize signature:", initGameFinalizeSig);
+  });
+
   async function initAddTogetherCompDef(
     program: Program<KnostraArcium>,
     owner: anchor.web3.Keypair,
@@ -704,6 +765,65 @@ async function getMXEPublicKeyWithRetry(
   );
 }
 
+// Separate functions for each computation definition type
+async function initInitGameCompDef(
+  program: Program<KnostraArcium>,
+  owner: anchor.web3.Keypair,
+  uploadRawCircuit: boolean,
+  offchainSource: boolean
+): Promise<string> {
+  const baseSeedCompDefAcc = getArciumAccountBaseSeed(
+    "ComputationDefinitionAccount"
+  );
+  const offset = getCompDefAccOffset("init_game");
+
+  const compDefPDA = PublicKey.findProgramAddressSync(
+    [baseSeedCompDefAcc, program.programId.toBuffer(), offset],
+    getArciumProgAddress()
+  )[0];
+
+  console.log(`Comp def PDA for init_game:`, compDefPDA.toBase58());
+
+  const sig = await program.methods
+    .initInitGameCompDef()
+    .accounts({
+      compDefAccount: compDefPDA,
+      payer: owner.publicKey,
+      mxeAccount: getMXEAccAddress(program.programId),
+    })
+    .signers([owner])
+    .rpc({
+      commitment: "confirmed",
+    });
+
+  console.log(`Init init_game computation definition transaction`, sig);
+
+  if (uploadRawCircuit) {
+    const rawCircuit = fs.readFileSync(`build/init_game.arcis`);
+    await uploadCircuit(
+      program.provider as anchor.AnchorProvider,
+      "init_game",
+      program.programId,
+      rawCircuit,
+      true
+    );
+  } else if (!offchainSource) {
+    const finalizeTx = await buildFinalizeCompDefTx(
+      program.provider as anchor.AnchorProvider,
+      Buffer.from(offset).readUInt32LE(),
+      program.programId
+    );
+
+    const latestBlockhash =
+      await program.provider.connection.getLatestBlockhash();
+    finalizeTx.recentBlockhash = latestBlockhash.blockhash;
+    finalizeTx.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight;
+
+    finalizeTx.sign(owner);
+    await program.provider.sendAndConfirm(finalizeTx);
+  }
+  return sig;
+}
 function readKpJson(path: string): anchor.web3.Keypair {
   const file = fs.readFileSync(path);
   return anchor.web3.Keypair.fromSecretKey(
